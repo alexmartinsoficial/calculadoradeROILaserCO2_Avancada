@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de ROI - Laser CO₂ V2</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HLJ5P8ZQ9G"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HLJ5P8ZQ9G');
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:6px;background:#DDD6FE;outline:none}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;background:#7C3AED;cursor:pointer;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+    input[type="range"]::-moz-range-thumb{width:24px;height:24px;background:#7C3AED;cursor:pointer;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+    .hidden{display:none}
+    @keyframes pulse-slow{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+    .animate-pulse-slow{animation:pulse-slow 3s cubic-bezier(0.4,0,0.6,1) infinite}
+    .tooltip{position:relative;display:inline-block;cursor:help}
+    .tooltip .tooltiptext{visibility:hidden;width:280px;background-color:#1f2937;color:#fff;text-align:left;border-radius:8px;padding:12px;position:absolute;z-index:1;bottom:125%;left:50%;margin-left:-140px;opacity:0;transition:opacity 0.3s;font-size:13px;line-height:1.4;box-shadow:0 4px 6px rgba(0,0,0,0.3)}
+    .tooltip .tooltiptext::after{content:"";position:absolute;top:100%;left:50%;margin-left:-5px;border-width:5px;border-style:solid;border-color:#1f2937 transparent transparent transparent}
+    .tooltip:hover .tooltiptext{visibility:visible;opacity:1}
+    input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+    input[type="number"]{-moz-appearance:textfield}
+    .procedimento-item:hover{background-color:#f9fafb}
+    #resultados{scroll-margin-top:20px}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+  
+  <!-- HEADER -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-3">Calculadora de ROI</h1>
+    <p class="text-xl md:text-2xl text-purple-700 font-semibold mb-2">Laser CO₂ Ultrapulsado com Microcoring</p>
+    <p class="text-lg text-gray-600">Reversi - Fismatek</p>
+  </div>
+
+  <!-- ETAPA 1: SEGMENTO -->
+  <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+    <div class="text-center mb-6">
+      <div class="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold text-sm mb-4">
+        🎯 ETAPA 1 DE 3
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Escolha seu Segmento de Clientes</h2>
+      <p class="text-gray-600">Selecione a categoria predominante da sua clínica:</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+      <button onclick="selecionarSegmento('popular')" id="btnPopular" class="p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-blue-50 border-blue-200 hover:border-blue-400">
+        <div class="text-4xl mb-3">💙</div>
+        <div class="text-xl font-bold text-blue-700 mb-2">POPULAR</div>
+        <div class="text-3xl font-black text-blue-600 mb-2">R$ 2.000</div>
+        <div class="text-sm text-gray-600">Tratamento básico</div>
+        <div class="text-xs text-gray-500 mt-2">Ex: Facial completo</div>
+      </button>
+
+      <button onclick="selecionarSegmento('premium')" id="btnPremium" class="p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-purple-600 border-purple-600 text-white shadow-2xl scale-105">
+        <div class="text-4xl mb-3">💜</div>
+        <div class="text-xl font-bold mb-2">PREMIUM</div>
+        <div class="text-3xl font-black mb-2">R$ 3.000</div>
+        <div class="text-sm text-purple-100">Experiência diferenciada</div>
+        <div class="text-xs text-purple-200 mt-2">Ex: Facial completo</div>
+      </button>
+
+      <button onclick="selecionarSegmento('luxo')" id="btnLuxo" class="p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-amber-50 border-amber-200 hover:border-amber-400">
+        <div class="text-4xl mb-3">🌟</div>
+        <div class="text-xl font-bold text-amber-700 mb-2">LUXO</div>
+        <div class="text-3xl font-black text-amber-600 mb-2">R$ 5.000</div>
+        <div class="text-sm text-gray-600">Excelência exclusiva</div>
+        <div class="text-xs text-gray-500 mt-2">Ex: Facial completo</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ETAPA 2: PROCEDIMENTOS -->
+  <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+    <div class="text-center mb-8">
+      <div class="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold text-sm mb-4">
+        📊 ETAPA 2 DE 3
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Estime seus Procedimentos Mensais</h2>
+      <p class="text-gray-600">Selecione os procedimentos que você pretende realizar e ajuste quantidades e valores:</p>
+    </div>
+
+    <!-- PROCEDIMENTOS NÃO CIRÚRGICOS -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-purple-200">
+        <h3 class="text-xl font-bold text-purple-700">🔹 Procedimentos Não Cirúrgicos</h3>
+      </div>
+      
+      <div class="space-y-3" id="listaNaoCirurgicos">
+        <!-- Itens serão gerados por JavaScript -->
+      </div>
+    </div>
+
+    <!-- PROCEDIMENTOS CIRÚRGICOS -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-blue-200">
+        <h3 class="text-xl font-bold text-blue-700">🔹 Procedimentos Cirúrgicos</h3>
+      </div>
+      
+      <div class="space-y-3" id="listaCirurgicos">
+        <!-- Itens serão gerados por JavaScript -->
+      </div>
+    </div>
+
+    <!-- RESUMO PARCIAL -->
+    <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border-2 border-purple-200">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <div class="text-sm text-gray-600 mb-1">📌 Total de Procedimentos/Mês</div>
+          <div class="text-3xl font-bold text-purple-700" id="totalProcedimentos">0</div>
+        </div>
+        <div>
+          <div class="text-sm text-gray-600 mb-1">💰 Faturamento Estimado/Mês</div>
+          <div class="text-3xl font-bold text-green-600" id="faturamentoEstimado">R$ 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ETAPA 3: INVESTIMENTO -->
+  <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+    <div class="text-center mb-8">
+      <div class="inline-block bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold text-sm mb-4">
+        💰 ETAPA 3 DE 3
+      </div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Simule seu Investimento Inicial</h2>
+      <p class="text-gray-600">Qual valor de entrada você pretende dar?</p>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+      <div class="mb-6">
+        <div class="flex justify-between mb-3">
+          <span class="text-sm font-semibold text-gray-700">R$ 10.000</span>
+          <span class="text-2xl font-bold text-purple-600" id="valorEntrada">R$ 10.000</span>
+          <span class="text-sm font-semibold text-gray-700">R$ 100.000</span>
+        </div>
+        <input type="range" min="10000" max="100000" step="1000" value="10000" id="sliderEntrada" oninput="atualizarEntrada(this.value)" class="w-full">
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border-2 border-purple-300">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <div class="text-sm text-gray-600 mb-1">Investimento Total</div>
+            <div class="text-2xl font-bold text-gray-800">R$ 229.900</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-600 mb-1">Entrada</div>
+            <div class="text-2xl font-bold text-purple-700" id="entradaDisplay">R$ 10.000</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-600 mb-1">Saldo a Financiar</div>
+            <div class="text-2xl font-bold text-gray-800" id="saldoFinanciar">R$ 219.900</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-600 mb-1">24 Parcelas sem juros</div>
+            <div class="text-2xl font-bold text-purple-700" id="valorParcela">R$ 9.162,50</div>
+          </div>
+        </div>
+        <div class="text-center text-sm text-gray-600 bg-white rounded-lg p-3">
+          💡 <span class="font-semibold">Dica:</span> Quanto maior a entrada, menor será sua parcela mensal!
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTÃO CALCULAR -->
+    <div class="text-center mt-8">
+      <button onclick="calcularResultados()" class="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-5 px-12 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transition-all transform hover:scale-105">
+        🚀 CALCULAR MEU ROI
+      </button>
+    </div>
+  </div>
+
+  <!-- SEÇÃO DE RESULTADOS -->
+  <div id="resultados" class="hidden">
+    
+    <!-- MÉTRICAS PRINCIPAIS -->
+    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">📊 Seus Resultados</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <!-- PAYBACK -->
+        <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-3xl">⚡</div>
+            <div class="tooltip">
+              <span class="text-2xl cursor-help">ℹ️</span>
+              <span class="tooltiptext">
+                <strong>PAYBACK</strong><br>
+                É o tempo que você leva para recuperar TODO o investimento.<br><br>
+                Exemplo: Investiu R$ 229.900? Em X meses você já tem seu dinheiro de volta! Depois disso, é LUCRO PURO! 💰
+              </span>
+            </div>
+          </div>
+          <div class="text-sm font-semibold mb-2 text-amber-100">PAYBACK</div>
+          <div class="text-4xl font-black mb-2" id="payback">0 meses</div>
+          <div class="text-sm text-amber-100">Retorno do Investimento</div>
+        </div>
+
+        <!-- ROI -->
+        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-3xl">📈</div>
+            <div class="tooltip">
+              <span class="text-2xl cursor-help">ℹ️</span>
+              <span class="tooltiptext">
+                <strong>ROI (Retorno Sobre Investimento)</strong><br>
+                Mostra quanto você ganhou em relação ao que gastou.<br><br>
+                Exemplo: 400% = você ganhou 4x mais que investiu!
+              </span>
+            </div>
+          </div>
+          <div class="text-sm font-semibold mb-2 text-green-100">ROI 24 MESES</div>
+          <div class="text-4xl font-black mb-2" id="roi">0%</div>
+          <div class="text-sm text-green-100">Retorno percentual</div>
+        </div>
+
+        <!-- LUCRO MENSAL -->
+        <div class="bg-gradient-to-br from-purple-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-3xl">💰</div>
+            <div class="tooltip">
+              <span class="text-2xl cursor-help">ℹ️</span>
+              <span class="tooltiptext">
+                <strong>LUCRO LÍQUIDO MENSAL</strong><br>
+                É o que realmente fica no seu bolso depois de pagar a parcela do equipamento.<br><br>
+                Exemplo: Faturou R$ 50k, pagou R$ 10k de parcela = sobrou R$ 40k pra você!
+              </span>
+            </div>
+          </div>
+          <div class="text-sm font-semibold mb-2 text-purple-100">LUCRO MENSAL</div>
+          <div class="text-4xl font-black mb-2" id="lucroMensal">R$ 0</div>
+          <div class="text-sm text-purple-100">Após descontar parcela</div>
+        </div>
+
+        <!-- FATURAMENTO -->
+        <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-3xl">🎯</div>
+          </div>
+          <div class="text-sm font-semibold mb-2 text-blue-100">FATURAMENTO</div>
+          <div class="text-4xl font-black mb-2" id="faturamentoMensal">R$ 0</div>
+          <div class="text-sm text-blue-100"><span id="qtdProcTotal">0</span> procedimentos/mês</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLUXO DE CAIXA -->
+    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">📈 Fluxo de Caixa - 24 Meses</h2>
+      
+      <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 mb-6">
+        <div class="text-center mb-4">
+          <canvas id="graficoFluxo" width="800" height="300"></canvas>
+        </div>
+        <div class="text-center bg-green-50 border-2 border-green-300 rounded-xl p-4">
+          <p class="text-green-700 font-semibold text-lg">
+            ✅ Após o mês <span id="mesPayback">6</span>, são <span id="mesesLucro">18</span> meses de LUCRO PURO!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABELA DETALHADA -->
+    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">📋 Detalhamento Mês a Mês</h2>
+        <button onclick="toggleTabela()" class="bg-purple-100 hover:bg-purple-200 text-purple-700 font-semibold py-2 px-4 rounded-lg transition-all">
+          <span id="btnTabelaText">Expandir</span> Tabela
+        </button>
+      </div>
+      
+      <div id="tabelaDetalhada" class="hidden overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-purple-100">
+            <tr>
+              <th class="p-3 text-left font-semibold">Mês</th>
+              <th class="p-3 text-right font-semibold">Faturamento</th>
+              <th class="p-3 text-right font-semibold">Parcela</th>
+              <th class="p-3 text-right font-semibold">Lucro</th>
+              <th class="p-3 text-right font-semibold">Acumulado</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaBody" class="divide-y">
+            <!-- Linhas geradas por JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EXPLICAÇÃO DOS TERMOS -->
+    <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl shadow-xl p-6 md:p-8 mb-8 border-2 border-purple-200">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">💡 Entenda os Termos Financeiros</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl p-6 shadow">
+          <div class="text-3xl mb-3">⚡</div>
+          <h3 class="text-xl font-bold text-amber-600 mb-3">PAYBACK (Retorno do Investimento)</h3>
+          <p class="text-gray-700 mb-4">É o tempo que você leva para recuperar <strong>TODO</strong> o dinheiro investido.</p>
+          <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
+            <p class="text-sm text-gray-700"><strong>No seu caso:</strong> em <span class="font-bold text-amber-600" id="explicaPayback">6 meses</span> você já terá os R$ 229.900 de volta! A partir daí, é LUCRO PURO! 💰</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow">
+          <div class="text-3xl mb-3">📈</div>
+          <h3 class="text-xl font-bold text-green-600 mb-3">ROI (Retorno Sobre Investimento)</h3>
+          <p class="text-gray-700 mb-4">Mostra quanto você ganhou em relação ao que gastou.</p>
+          <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+            <p class="text-sm text-gray-700 mb-2"><strong>Exemplo:</strong> <span class="font-bold text-green-600" id="explicaROI">400%</span> significa que você ganhou 4x mais do que investiu!</p>
+            <p class="text-xs text-gray-600">• Investiu: R$ 229.900<br>• Lucrou em 24 meses: <span id="explicaLucro24">R$ 950.120</span><br>• Retorno: multiplicou seu dinheiro!</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow">
+          <div class="text-3xl mb-3">💰</div>
+          <h3 class="text-xl font-bold text-purple-600 mb-3">LUCRO LÍQUIDO MENSAL</h3>
+          <p class="text-gray-700 mb-4">É o que realmente fica no seu bolso depois de pagar a parcela do equipamento.</p>
+          <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+            <p class="text-sm text-gray-700"><strong>Exemplo:</strong> Faturou <span id="explicaFat">R$ 50.000</span>, pagou <span id="explicaParcela">R$ 9.995</span> de parcela = sobrou <span class="font-bold text-purple-600" id="explicaLucro">R$ 40.005</span> limpos pra você!</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow">
+          <div class="text-3xl mb-3">🎯</div>
+          <h3 class="text-xl font-bold text-blue-600 mb-3">FATURAMENTO MENSAL</h3>
+          <p class="text-gray-700 mb-4">É o total que você recebe dos clientes pelos procedimentos realizados.</p>
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <p class="text-sm text-gray-700"><strong>No seu caso:</strong> Com <span id="explicaQtd">20</span> procedimentos/mês você fatura <span class="font-bold text-blue-600" id="explicaFatTotal">R$ 50.000</span> mensais.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTOQUE -->
+    <div class="bg-gradient-to-r from-red-600 to-red-700 rounded-3xl shadow-2xl p-8 mb-8 text-white">
+      <div class="text-center">
+        <h3 class="text-2xl font-bold mb-4">📦 Últimas Unidades do Lote de Fevereiro</h3>
+        <div class="bg-white bg-opacity-20 rounded-2xl p-6 mb-4">
+          <div class="text-6xl font-black mb-2" id="unidadesRestantes">5</div>
+          <div class="text-xl font-semibold mb-4">unidades restantes</div>
+          <div class="bg-gray-200 rounded-full h-8 overflow-hidden mb-3">
+            <div id="barraEstoque" class="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-1000 flex items-center justify-end pr-3" style="width: 60%">
+              <span class="text-xs font-bold text-white drop-shadow-lg">60%</span>
+            </div>
+          </div>
+          <div class="text-sm text-white">
+            <span class="font-bold">7 unidades já vendidas</span> de 12 disponíveis
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-3 text-lg">
+          <span class="text-3xl">⚠️</span>
+          <div class="text-left">
+            <div class="font-bold">Próximo lote somente em ABRIL/2026</div>
+            <div class="text-sm text-red-200">Garanta sua entrega para FEVEREIRO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONDIÇÕES DE PAGAMENTO -->
+    <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8">
+      <h3 class="text-2xl font-bold text-gray-800 mb-6">💰 Condições de Pagamento</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border-2 border-purple-300">
+          <div class="text-sm text-purple-700 font-semibold mb-2">Entrada</div>
+          <div class="text-4xl font-bold text-purple-700" id="entradaFinal">R$ 10.000</div>
+        </div>
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-2 border-blue-300">
+          <div class="text-sm text-blue-700 font-semibold mb-2">Parcelas</div>
+          <div class="text-4xl font-bold text-blue-700"><span id="parcelasFinal">24x R$ 9.995,83</span></div>
+          <div class="text-xs text-gray-500 mt-1">Sem juros</div>
+        </div>
+      </div>
+      <div class="mt-6 bg-green-50 rounded-xl p-6 border-2 border-green-300">
+        <div class="text-sm font-semibold text-green-700 mb-2">💡 Seu Lucro Líquido Mensal Estimado</div>
+        <div class="text-4xl font-bold text-green-700" id="lucroFinal">R$ 0</div>
+        <div class="text-sm text-gray-600 mt-2">(já descontada a parcela do equipamento)</div>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <a href="#" onclick="enviarWhatsApp(); return false;" class="block">
+        <div class="bg-gradient-to-br from-purple-600 to-purple-800 rounded-3xl shadow-2xl p-8 text-white text-center hover:scale-105 transition-transform cursor-pointer">
+          <div class="text-5xl mb-4">🎯</div>
+          <h2 class="text-2xl font-bold mb-3">Garantir Minha Vaga no Lote</h2>
+          <p class="text-xl mb-6 text-purple-100">Enviar simulação pro WhatsApp</p>
+          <div class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </div>
+        </div>
+      </a>
+      
+      <a href="https://wa.me/5562983160209?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o%20online!" target="_blank" class="block">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl shadow-2xl p-8 text-white text-center hover:scale-105 transition-transform cursor-pointer">
+          <div class="text-5xl mb-4">🎥</div>
+          <h2 class="text-2xl font-bold mb-3">Agendar Demonstração Online</h2>
+          <p class="text-xl mb-6 text-blue-100">Veja o aparelho funcionando</p>
+          <div class="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="text-center bg-white rounded-2xl shadow-lg p-6">
+    <p class="text-gray-600 mb-2">📱 WhatsApp: (62) 9 8316-0209</p>
+    <p class="text-gray-600">📸 Instagram: @alextecnologiamedica</p>
+  </div>
+
+</div>
+
+<script>
+// DADOS DOS PROCEDIMENTOS
+const procedimentosNaoCirurgicos = [
+  {nome: 'Área da boca', popular: 900, premium: 1200, luxo: 1600},
+  {nome: 'Olhos (pálpebras)', popular: 900, premium: 1200, luxo: 1600},
+  {nome: 'Mãos', popular: 1000, premium: 2000, luxo: 3500},
+  {nome: 'Colo', popular: 1000, premium: 2000, luxo: 3500},
+  {nome: 'Laser intravaginal', popular: 1200, premium: 2000, luxo: 3000},
+  {nome: 'Pescoço', popular: 1800, premium: 3000, luxo: 5000},
+  {nome: 'Full Face - Semi ablativo', popular: 2000, premium: 3000, luxo: 7000},
+  {nome: 'Glúteos', popular: 3000, premium: 5000, luxo: 7000},
+  {nome: 'Abdômen completo', popular: 3000, premium: 5000, luxo: 7000},
+  {nome: 'Resurfacing (rejuvenescimento profundo)', popular: 4000, premium: 7000, luxo: 12000}
+];
+
+const procedimentosCirurgicos = [
+  {nome: 'Lesões benignas pequenas', popular: 800, premium: 1500, luxo: 2500},
+  {nome: 'Ressecção de pintas', popular: 800, premium: 1200, luxo: 2000},
+  {nome: 'Siringomas e mílias', popular: 1500, premium: 2000, luxo: 3000},
+  {nome: 'Exérese de xantelasmas', popular: 2500, premium: 4000, luxo: 6000},
+  {nome: 'Excisão de cicatrizes', popular: 2500, premium: 4000, luxo: 6000},
+  {nome: 'Vaporização de quelóides', popular: 2500, premium: 4000, luxo: 6000},
+  {nome: 'Blefaroplastia', popular: 6000, premium: 8500, luxo: 12000},
+  {nome: 'Ninfoplastia', popular: 8000, premium: 12000, luxo: 20000}
+];
+
+let segmentoAtual = 'premium';
+let entradaAtual = 10000;
+const investimentoTotal = 229900;
+
+// INICIALIZAÇÃO
+window.addEventListener('DOMContentLoaded', () => {
+  renderizarProcedimentos();
+  atualizarEstoque();
+  setInterval(atualizarEstoque, 60000);
+});
+
+// SELECIONAR SEGMENTO
+function selecionarSegmento(segmento) {
+  segmentoAtual = segmento;
+  
+  // Atualizar botões
+  ['Popular', 'Premium', 'Luxo'].forEach(s => {
+    const btn = document.getElementById('btn' + s);
+    const seg = s.toLowerCase();
+    if (seg === segmento) {
+      if (s === 'Premium') {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-purple-600 border-purple-600 text-white shadow-2xl scale-105';
+      } else if (s === 'Popular') {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-blue-600 border-blue-600 text-white shadow-2xl scale-105';
+      } else {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-amber-600 border-amber-600 text-white shadow-2xl scale-105';
+      }
+    } else {
+      if (s === 'Premium') {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-purple-50 border-purple-200 hover:border-purple-400';
+      } else if (s === 'Popular') {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-blue-50 border-blue-200 hover:border-blue-400';
+      } else {
+        btn.className = 'p-6 rounded-2xl border-4 transition-all hover:scale-105 bg-amber-50 border-amber-200 hover:border-amber-400';
+      }
+    }
+  });
+  
+  // Atualizar preços sugeridos
+  renderizarProcedimentos();
+}
+
+// RENDERIZAR PROCEDIMENTOS
+function renderizarProcedimentos() {
+  const listaNaoCirurgicos = document.getElementById('listaNaoCirurgicos');
+  const listaCirurgicos = document.getElementById('listaCirurgicos');
+  
+  listaNaoCirurgicos.innerHTML = procedimentosNaoCirurgicos.map((proc, idx) => 
+    criarItemProcedimento(proc, idx, 'nc')
+  ).join('');
+  
+  listaCirurgicos.innerHTML = procedimentosCirurgicos.map((proc, idx) => 
+    criarItemProcedimento(proc, idx, 'c')
+  ).join('');
+}
+
+function criarItemProcedimento(proc, idx, tipo) {
+  const valor = proc[segmentoAtual];
+  const id = tipo + idx;
+  
+  return `
+    <div class="procedimento-item flex flex-col md:flex-row items-start md:items-center gap-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-200 transition-all hover:border-purple-300">
+      <div class="flex-1">
+        <label class="font-semibold text-gray-700">${proc.nome}</label>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">Qtd/mês</label>
+          <input type="number" id="qtd_${id}" min="0" value="0" oninput="atualizarResumo()" class="w-20 px-3 py-2 border-2 border-gray-300 rounded-lg text-center font-semibold focus:border-purple-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">Valor (R$)</label>
+          <input type="number" id="valor_${id}" min="0" value="${valor}" step="50" oninput="atualizarResumo()" class="w-32 px-3 py-2 border-2 border-gray-300 rounded-lg font-semibold focus:border-purple-500 focus:outline-none">
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ATUALIZAR RESUMO
+function atualizarResumo() {
+  let totalProc = 0;
+  let faturamento = 0;
+  
+  // Não cirúrgicos
+  procedimentosNaoCirurgicos.forEach((proc, idx) => {
+    const id = 'nc' + idx;
+    const qtd = parseInt(document.getElementById('qtd_' + id).value) || 0;
+    if (qtd > 0) {
+      const valor = parseFloat(document.getElementById('valor_' + id).value) || 0;
+      totalProc += qtd;
+      faturamento += qtd * valor;
+    }
+  });
+  
+  // Cirúrgicos
+  procedimentosCirurgicos.forEach((proc, idx) => {
+    const id = 'c' + idx;
+    const qtd = parseInt(document.getElementById('qtd_' + id).value) || 0;
+    if (qtd > 0) {
+      const valor = parseFloat(document.getElementById('valor_' + id).value) || 0;
+      totalProc += qtd;
+      faturamento += qtd * valor;
+    }
+  });
+  
+  document.getElementById('totalProcedimentos').textContent = totalProc;
+  document.getElementById('faturamentoEstimado').textContent = formatarMoeda(faturamento);
+}
+
+// ATUALIZAR ENTRADA
+function atualizarEntrada(valor) {
+  entradaAtual = parseInt(valor);
+  const saldo = investimentoTotal - entradaAtual;
+  const parcela = saldo / 24;
+  
+  document.getElementById('valorEntrada').textContent = formatarMoeda(entradaAtual);
+  document.getElementById('entradaDisplay').textContent = formatarMoeda(entradaAtual);
+  document.getElementById('saldoFinanciar').textContent = formatarMoeda(saldo);
+  document.getElementById('valorParcela').textContent = formatarMoeda(parcela);
+}
+
+// CALCULAR RESULTADOS
+function calcularResultados() {
+  // Obter dados
+  let totalProc = 0;
+  let faturamentoMensal = 0;
+  
+  procedimentosNaoCirurgicos.forEach((proc, idx) => {
+    const id = 'nc' + idx;
+    const qtd = parseInt(document.getElementById('qtd_' + id).value) || 0;
+    if (qtd > 0) {
+      const valor = parseFloat(document.getElementById('valor_' + id).value) || 0;
+      totalProc += qtd;
+      faturamentoMensal += qtd * valor;
+    }
+  });
+  
+  procedimentosCirurgicos.forEach((proc, idx) => {
+    const id = 'c' + idx;
+    const qtd = parseInt(document.getElementById('qtd_' + id).value) || 0;
+    if (qtd > 0) {
+      const valor = parseFloat(document.getElementById('valor_' + id).value) || 0;
+      totalProc += qtd;
+      faturamentoMensal += qtd * valor;
+    }
+  });
+  
+  if (totalProc === 0 || faturamentoMensal === 0) {
+    alert('⚠️ Por favor, informe a quantidade de pelo menos um procedimento!');
+    return;
+  }
+  
+  const saldo = investimentoTotal - entradaAtual;
+  const parcelaMensal = saldo / 24;
+  const lucroMensal = faturamentoMensal - parcelaMensal;
+  const lucro24Meses = (lucroMensal * 23) - entradaAtual; // 23 meses pois o primeiro é entrada
+  const roi = (lucro24Meses / investimentoTotal) * 100;
+  const paybackMeses = lucroMensal > 0 ? Math.ceil(investimentoTotal / lucroMensal) : 0;
+  
+  // Atualizar métricas
+  document.getElementById('payback').textContent = paybackMeses + (paybackMeses === 1 ? ' mês' : ' meses');
+  document.getElementById('roi').textContent = roi.toFixed(0) + '%';
+  document.getElementById('lucroMensal').textContent = formatarMoeda(lucroMensal);
+  document.getElementById('faturamentoMensal').textContent = formatarMoeda(faturamentoMensal);
+  document.getElementById('qtdProcTotal').textContent = totalProc;
+  
+  // Atualizar explicações
+  document.getElementById('explicaPayback').textContent = paybackMeses + (paybackMeses === 1 ? ' mês' : ' meses');
+  document.getElementById('explicaROI').textContent = roi.toFixed(0) + '%';
+  document.getElementById('explicaLucro24').textContent = formatarMoeda(lucro24Meses);
+  document.getElementById('explicaFat').textContent = formatarMoeda(faturamentoMensal);
+  document.getElementById('explicaParcela').textContent = formatarMoeda(parcelaMensal);
+  document.getElementById('explicaLucro').textContent = formatarMoeda(lucroMensal);
+  document.getElementById('explicaQtd').textContent = totalProc;
+  document.getElementById('explicaFatTotal').textContent = formatarMoeda(faturamentoMensal);
+  
+  // Atualizar condições de pagamento
+  document.getElementById('entradaFinal').textContent = formatarMoeda(entradaAtual);
+  document.getElementById('parcelasFinal').textContent = '24x ' + formatarMoeda(parcelaMensal);
+  document.getElementById('lucroFinal').textContent = formatarMoeda(lucroMensal);
+  
+  // Atualizar fluxo de caixa
+  document.getElementById('mesPayback').textContent = paybackMeses;
+  document.getElementById('mesesLucro').textContent = 24 - paybackMeses;
+  
+  // Gerar tabela
+  gerarTabelaDetalhada(faturamentoMensal, parcelaMensal, entradaAtual, paybackMeses);
+  
+  // Gerar gráfico
+  gerarGrafico(faturamentoMensal, parcelaMensal, entradaAtual, paybackMeses);
+  
+  // Mostrar resultados e scroll
+  document.getElementById('resultados').classList.remove('hidden');
+  document.getElementById('resultados').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// GERAR TABELA
+function gerarTabelaDetalhada(faturamento, parcela, entrada, paybackMes) {
+  const tbody = document.getElementById('tabelaBody');
+  let acumulado = -entrada;
+  let html = '';
+  
+  // Mês 1 (entrada)
+  html += `
+    <tr class="bg-red-50">
+      <td class="p-3 font-semibold">1</td>
+      <td class="p-3 text-right">R$ 0</td>
+      <td class="p-3 text-right text-red-600">-${formatarMoeda(entrada)}</td>
+      <td class="p-3 text-right text-red-600">-${formatarMoeda(entrada)}</td>
+      <td class="p-3 text-right text-red-600">${formatarMoeda(acumulado)}</td>
+    </tr>
+  `;
+  
+  // Meses 2-24
+  for (let i = 2; i <= 24; i++) {
+    const lucro = faturamento - parcela;
+    acumulado += lucro;
+    const isPayback = i === paybackMes;
+    const bgClass = isPayback ? 'bg-amber-100 border-l-4 border-amber-500' : (i % 2 === 0 ? 'bg-gray-50' : '');
+    
+    html += `
+      <tr class="${bgClass}">
+        <td class="p-3 font-semibold">${i}${isPayback ? ' ⚡' : ''}</td>
+        <td class="p-3 text-right">${formatarMoeda(faturamento)}</td>
+        <td class="p-3 text-right text-red-600">-${formatarMoeda(parcela)}</td>
+        <td class="p-3 text-right text-green-600">+${formatarMoeda(lucro)}</td>
+        <td class="p-3 text-right font-semibold ${acumulado >= 0 ? 'text-green-600' : 'text-red-600'}">${formatarMoeda(acumulado)}</td>
+      </tr>
+    `;
+  }
+  
+  tbody.innerHTML = html;
+}
+
+// GERAR GRÁFICO (Simples com Canvas)
+function gerarGrafico(faturamento, parcela, entrada, paybackMes) {
+  const canvas = document.getElementById('graficoFluxo');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  
+  ctx.clearRect(0, 0, width, height);
+  
+  // Calcular pontos
+  let acumulado = -entrada;
+  const pontos = [{x: 0, y: acumulado}];
+  
+  for (let i = 1; i <= 24; i++) {
+    if (i === 1) {
+      acumulado = -entrada;
+    } else {
+      acumulado += (faturamento - parcela);
+    }
+    pontos.push({x: i, y: acumulado});
+  }
+  
+  // Encontrar min e max
+  const minY = Math.min(...pontos.map(p => p.y));
+  const maxY = Math.max(...pontos.map(p => p.y));
+  const rangeY = maxY - minY;
+  
+  // Escala
+  const scaleX = width / 24;
+  const scaleY = (height - 60) / rangeY;
+  const offsetY = 40;
+  
+  // Desenhar eixos
+  ctx.strokeStyle = '#d1d5db';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const zeroY = height - offsetY - (0 - minY) * scaleY;
+  ctx.moveTo(0, zeroY);
+  ctx.lineTo(width, zeroY);
+  ctx.stroke();
+  
+  // Linha zero
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '12px sans-serif';
+  ctx.fillText('R$ 0', 5, zeroY - 5);
+  
+  // Desenhar linha de lucro
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  
+  pontos.forEach((ponto, i) => {
+    const x = ponto.x * scaleX;
+    const y = height - offsetY - (ponto.y - minY) * scaleY;
+    
+    if (i === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  
+  ctx.stroke();
+  
+  // Área de lucro
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+  ctx.beginPath();
+  pontos.forEach((ponto, i) => {
+    const x = ponto.x * scaleX;
+    const y = height - offsetY - (ponto.y - minY) * scaleY;
+    if (i === 0) {
+      ctx.moveTo(x, zeroY);
+      ctx.lineTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  ctx.lineTo(24 * scaleX, zeroY);
+  ctx.closePath();
+  ctx.fill();
+  
+  // Marcar payback
+  if (paybackMes <= 24) {
+    const paybackPonto = pontos[paybackMes - 1];
+    const x = paybackPonto.x * scaleX;
+    const y = height - offsetY - (paybackPonto.y - minY) * scaleY;
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('⚡ PAYBACK', x - 35, y - 15);
+  }
+  
+  // Labels dos meses
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '11px sans-serif';
+  [1, 6, 12, 18, 24].forEach(mes => {
+    const x = mes * scaleX;
+    ctx.fillText(mes, x - 5, height - 5);
+  });
+}
+
+// TOGGLE TABELA
+function toggleTabela() {
+  const tabela = document.getElementById('tabelaDetalhada');
+  const btn = document.getElementById('btnTabelaText');
+  
+  if (tabela.classList.contains('hidden')) {
+    tabela.classList.remove('hidden');
+    btn.textContent = 'Recolher';
+  } else {
+    tabela.classList.add('hidden');
+    btn.textContent = 'Expandir';
+  }
+}
+
+// ESTOQUE
+function calcularUnidadesRestantes() {
+  const dataInicio = new Date('2025-12-29T00:00:00');
+  const dataFim = new Date('2026-01-30T23:59:59');
+  const agora = new Date();
+  
+  if (agora >= dataFim) return 0;
+  if (agora <= dataInicio) return 5;
+  
+  const totalDias = (dataFim - dataInicio) / (1000 * 60 * 60 * 24);
+  const diasPassados = (agora - dataInicio) / (1000 * 60 * 60 * 24);
+  const percentualPassado = diasPassados / totalDias;
+  
+  const unidades = Math.max(0, Math.ceil(5 - (percentualPassado * 5)));
+  return unidades;
+}
+
+function atualizarEstoque() {
+  const unidades = calcularUnidadesRestantes();
+  const vendidas = 7 + (5 - unidades);
+  const percentual = ((7 + (5 - unidades)) / 12) * 100;
+  
+  document.getElementById('unidadesRestantes').textContent = unidades;
+  const barra = document.getElementById('barraEstoque');
+  barra.style.width = percentual + '%';
+  barra.querySelector('span').textContent = Math.round(percentual) + '%';
+}
+
+// ENVIAR WHATSAPP
+function enviarWhatsApp() {
+  const unidades = calcularUnidadesRestantes();
+  const faturamento = document.getElementById('faturamentoMensal').textContent;
+  const lucro = document.getElementById('lucroMensal').textContent;
+  const payback = document.getElementById('payback').textContent;
+  const roi = document.getElementById('roi').textContent;
+  const qtdProc = document.getElementById('qtdProcTotal').textContent;
+  
+  let mensagem = `Olá! Quero garantir minha vaga no lote de FEVEREIRO!%0A%0A`;
+  mensagem += `📦 Vi que restam apenas ${unidades} unidade${unidades !== 1 ? 's' : ''}!%0A%0A`;
+  mensagem += `📊 Minha Simulação Personalizada:%0A`;
+  mensagem += `🎯 Faturamento Mensal: ${faturamento}%0A`;
+  mensagem += `💰 Lucro Líquido: ${lucro}%0A`;
+  mensagem += `⚡ Payback: ${payback}%0A`;
+  mensagem += `📈 ROI 24 meses: ${roi}%0A`;
+  mensagem += `📋 Procedimentos/mês: ${qtdProc}%0A%0A`;
+  mensagem += `💵 Entrada escolhida: ${formatarMoeda(entradaAtual)}%0A%0A`;
+  mensagem += `🎁 Quero receber também o PDF: "Guia Completo de Precificação para Laser CO₂"`;
+  
+  window.open(`https://wa.me/5562983160209?text=${mensagem}`, '_blank');
+}
+
+// FORMATAÇÃO
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0});
+}
+</script>
+
+</body>
+</html>
